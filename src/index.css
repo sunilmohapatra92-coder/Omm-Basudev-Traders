@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+  --font-cinzel-dec: "Cinzel Decorative", serif;
+  --font-cinzel: "Cinzel", serif;
+  --font-garamond: "EB Garamond", Georgia, serif;
+  
+  --color-gold: #C9922A;
+  --color-gold-light: #F0C050;
+  --color-gold-pale: #FDE68A;
+  --color-gold-dark: #7C5C12;
+  --color-black: #0A0A0A;
+  --color-deep: #111008;
+  --color-smoke: #1A180F;
+  --color-text-muted: #A08840;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-black);
+  color: #EFE4C0;
+  font-family: var(--font-garamond);
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #F0C050 0%, #C9922A 40%, #FDE68A 70%, #A06018 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-gold-simple {
+  background: linear-gradient(135deg, #F0C050, #C9922A 50%, #F0C050);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bg-gradient-gold {
+  background: linear-gradient(135deg, #F0C050, #C9922A, #F0C050);
+  background-size: 200% 200%;
+}
