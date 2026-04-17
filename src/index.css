@@ -5,14 +5,14 @@
   --font-cinzel: "Cinzel", serif;
   --font-garamond: "EB Garamond", Georgia, serif;
   
-  --color-gold: #C9922A;
-  --color-gold-light: #F0C050;
-  --color-gold-pale: #FDE68A;
-  --color-gold-dark: #7C5C12;
-  --color-black: #0A0A0A;
-  --color-deep: #111008;
-  --color-smoke: #1A180F;
-  --color-text-muted: #A08840;
+  --color-gold: #D4AF37;
+  --color-gold-light: #FBF5E5;
+  --color-gold-pale: #F3E5AB;
+  --color-gold-dark: #8A6327;
+  --color-black: #050400;
+  --color-deep: #0C0A06;
+  --color-smoke: #14120A;
+  --color-text-muted: #BFA97C;
 }
 
 html {
@@ -21,25 +21,77 @@ html {
 
 body {
   background-color: var(--color-black);
-  color: #EFE4C0;
+  color: #F8F5EE;
   font-family: var(--font-garamond);
 }
 
+/* Custom Scrollbar for a premium feel */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #000;
+}
+::-webkit-scrollbar-thumb {
+  background: #332B18;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #D4AF37;
+}
+
 .text-gradient-gold {
-  background: linear-gradient(135deg, #F0C050 0%, #C9922A 40%, #FDE68A 70%, #A06018 100%);
+  background: linear-gradient(110deg, #FBF5E5 0%, #D4AF37 30%, #F3E5AB 50%, #8A6327 80%, #FBF5E5 100%);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .text-gradient-gold-simple {
-  background: linear-gradient(135deg, #F0C050, #C9922A 50%, #F0C050);
+  background: linear-gradient(135deg, #FBF5E5, #D4AF37 70%, #8A6327);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .bg-gradient-gold {
-  background: linear-gradient(135deg, #F0C050, #C9922A, #F0C050);
+  background: linear-gradient(145deg, #D4AF37, #8A6327, #D4AF37);
   background-size: 200% 200%;
+}
+
+.premium-noise {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Shimmer animation for premium cards */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.hover-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.hover-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.8s ease-in-out;
+}
+.hover-shimmer:hover::after {
+  transform: translateX(100%);
 }

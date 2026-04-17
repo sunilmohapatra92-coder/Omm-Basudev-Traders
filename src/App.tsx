@@ -129,8 +129,8 @@ const CinematicSparksBackground = () => {
     let time = 0;
 
     const explode = () => {
-      // Create ~350 sparks for the explosion
-      for(let i = 0; i < 350; i++) {
+      // Create ~160 sparks for the explosion
+      for(let i = 0; i < 160; i++) {
         const angle = Math.random() * Math.PI * 2;
         // Concentrate more sparks outwards but varied
         const velocity = (Math.random() * Math.random() * 18) + 2; 
@@ -141,7 +141,7 @@ const CinematicSparksBackground = () => {
           vx: Math.cos(angle) * velocity * 0.4, // Slow motion horizontal
           vy: Math.sin(angle) * velocity * 0.4, // Slow motion vertical
           life: 1.0,
-          decay: Math.random() * 0.004 + 0.002, // 5-8s average decay
+          decay: Math.random() * 0.005 + 0.002, // 4-7s average decay
           size: Math.random() * 2 + 0.5,
           color: Math.random() > 0.6 ? '#FFD700' : (Math.random() > 0.5 ? '#FFA500' : '#FFF8E7'),
           trail: []
@@ -157,15 +157,14 @@ const CinematicSparksBackground = () => {
     const render = () => {
       time++;
       
-      // Wipe with extremely low opacity to create slight glowing trails
-      ctx.fillStyle = 'rgba(2, 2, 2, 0.15)'; 
-      ctx.fillRect(0, 0, width, height);
+      // Use clean hardware-accelerated clear instead of expensive massive rect painting
+      ctx.clearRect(0, 0, width, height);
 
       // Render glowing explosion core that fades
       const coreOpacity = Math.max(0, 1 - (time % loopDuration) / 60);
       if (coreOpacity > 0) {
         const gradient = ctx.createRadialGradient(width/2, height*0.45, 0, width/2, height*0.45, 300);
-        gradient.addColorStop(0, `rgba(255, 180, 50, ${coreOpacity * 0.4})`);
+        gradient.addColorStop(0, `rgba(255, 180, 50, ${coreOpacity * 0.3})`);
         gradient.addColorStop(1, 'transparent');
         ctx.fillStyle = gradient;
         ctx.beginPath();
@@ -184,7 +183,7 @@ const CinematicSparksBackground = () => {
         const p = sparks[i];
         
         p.trail.push({x: p.x, y: p.y});
-        if(p.trail.length > 10) p.trail.shift();
+        if(p.trail.length > 20) p.trail.shift(); // Longer manual trail
 
         // Friction for slow motion
         p.vx *= 0.985;
@@ -210,19 +209,17 @@ const CinematicSparksBackground = () => {
           }
         }
         ctx.strokeStyle = p.color;
+        ctx.lineCap = 'round';
         ctx.lineWidth = p.size * Math.max(0, p.life);
         ctx.globalAlpha = Math.max(0, p.life * 0.6);
         ctx.stroke();
 
-        // Draw spark head
+        // Draw spark head (removed expensive shadow calculations)
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size * Math.max(0, p.life) * 1.5, 0, Math.PI * 2);
         ctx.fillStyle = '#FFFFFF';
         ctx.globalAlpha = Math.max(0, p.life);
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = p.color;
         ctx.fill();
-        ctx.shadowBlur = 0;
       }
 
       ctx.globalCompositeOperation = 'source-over';
@@ -262,6 +259,93 @@ const CinematicSparksBackground = () => {
 };
 
 const Hero = () => {
+  return (
+    <section className="relative z-10 min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden">
+      
+      {/* Cinematic Animated Background Replacing Static Video */}
+      <CinematicSparksBackground />
+
+      <div className="container mx-auto px-6 lg:px-12 relative z-10 w-full flex flex-col items-center justify-center text-center">
+        
+        {/* Content */}
+        <div className="pointer-events-none max-w-3xl flex flex-col items-center">
+          <motion.div 
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.3 }}
+            className="font-cinzel text-xs md:text-sm tracking-[0.4em] uppercase text-gold mb-6 inline-block bg-white/5 border border-gold/20 px-6 py-2 rounded-full pointer-events-auto backdrop-blur-md"
+          >
+            Wholesale Fireworks Dealer in Odisha
+          </motion.div>
+          
+          <motion.h1 
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="font-cinzel-dec text-5xl md:text-7xl lg:text-8xl font-black leading-tight text-white mb-4 pointer-events-auto drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)]"
+          >
+            Omm Basudev<br/><span className="text-gradient-gold">Traders</span>
+          </motion.h1>
+          
+          <motion.p 
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.7 }}
+            className="font-cinzel text-sm md:text-xl tracking-[0.2em] uppercase text-gold-light mb-8 pointer-events-auto"
+          >
+            Illuminate Every Celebration
+          </motion.p>
+          
+          <motion.p 
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.9 }}
+            className="text-lg md:text-xl leading-relaxed text-[#C8B880] mb-12 pointer-events-auto"
+          >
+            Bringing joy, light, and divine sparkle to every festival. We provide premium quality firecrackers at competitive wholesale prices for all your grand celebrations.
+          </motion.p>
+          
+          <motion.div 
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1.0 }}
+            className="flex flex-col sm:flex-row gap-6 mb-12 pointer-events-auto"
+          >
+            <a 
+              href="https://api.whatsapp.com/send/?phone=%2B918249541419" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="flex items-center justify-center gap-3 font-cinzel text-sm tracking-[0.25em] uppercase text-black bg-[#25D366] py-4 px-10 rounded-sm hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(37,211,102,0.4)] transition-all duration-300 font-bold"
+            >
+              <WhatsAppIcon className="w-5 h-5 text-black" />
+              WhatsApp Us
+            </a>
+            <a 
+              href="#bulk-discount" 
+              className="flex items-center justify-center gap-3 font-cinzel text-sm tracking-[0.25em] uppercase text-gold-light bg-transparent border border-gold py-4 px-10 rounded-sm hover:bg-gold/15 hover:-translate-y-1 transition-all duration-300"
+            >
+              <Package className="w-5 h-5" />
+              Claim Discount
+            </a>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1.1 }}
+            className="flex items-center gap-4 opacity-70 pointer-events-auto"
+          >
+            <div className="h-px bg-gradient-to-r from-transparent via-gold to-transparent w-24"></div>
+            <span className="font-cinzel text-xs tracking-[0.3em] uppercase text-gold whitespace-nowrap">Trusted by 1000+ Customers</span>
+            <div className="h-px bg-gradient-to-r from-transparent via-gold to-transparent w-24"></div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const ClaimBulkDiscountSection = () => {
   const [formData, setFormData] = useState({ name: '', phone: '', requirement: '' });
   
   const handleWhatsAppRedirect = (e: React.FormEvent) => {
@@ -272,102 +356,26 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative z-10 min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden">
-      
-      {/* Cinematic Animated Background Replacing Static Video */}
-      <CinematicSparksBackground />
-
-      <div className="container mx-auto px-6 lg:px-12 relative z-10 w-full">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          
-          {/* Content Left */}
-          <div className="text-left pointer-events-none">
-            <motion.div 
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.3 }}
-              className="font-cinzel text-xs tracking-[0.4em] uppercase text-gold mb-4 inline-block bg-white/5 border border-gold/20 px-4 py-2 rounded pointer-events-auto backdrop-blur-md"
-            >
-              Wholesale Fireworks Dealer in Odisha
-            </motion.div>
-            
-            <motion.h1 
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.5 }}
-              className="font-cinzel-dec text-4xl md:text-5xl lg:text-7xl font-black leading-tight text-white mb-2 pointer-events-auto drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)]"
-            >
-              Omm Basudev<br/><span className="text-gradient-gold">Traders</span>
-            </motion.h1>
-            
-            <motion.p 
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.7 }}
-              className="font-cinzel text-sm md:text-lg tracking-[0.2em] uppercase text-gold-light mb-6 pointer-events-auto"
-            >
-              Illuminate Every Celebration
-            </motion.p>
-            
-            <motion.p 
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.9 }}
-              className="text-lg leading-relaxed text-[#C8B880] max-w-xl mb-10 pointer-events-auto"
-            >
-              Bringing joy, light, and divine sparkle to every festival. We provide premium quality firecrackers at wholesale prices. Fill out the form to unlock exclusive bulk discounts.
-            </motion.p>
-            
-            <motion.div 
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 1.0 }}
-              className="flex flex-col sm:flex-row gap-4 mb-10 pointer-events-auto"
-            >
-              <a 
-                href="https://api.whatsapp.com/send/?phone=%2B918249541419" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="flex items-center justify-center gap-2 font-cinzel text-xs tracking-[0.25em] uppercase text-black bg-[#25D366] py-3 px-8 rounded hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(37,211,102,0.4)] transition-all duration-300 font-bold"
-              >
-                <WhatsAppIcon className="w-4 h-4 text-black" />
-                WhatsApp Us
-              </a>
-              <a 
-                href="tel:+918249541419" 
-                className="flex items-center justify-center gap-2 font-cinzel text-xs tracking-[0.25em] uppercase text-gold-light bg-transparent border border-gold py-3 px-8 rounded hover:bg-gold/15 hover:-translate-y-0.5 transition-all duration-300"
-              >
-                <Phone className="w-4 h-4" />
-                Call Now
-              </a>
-            </motion.div>
-
-            <motion.div 
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 1.1 }}
-              className="flex items-center gap-4 opacity-70 pointer-events-auto"
-            >
-              <div className="h-px bg-gradient-to-r from-gold to-transparent w-16"></div>
-              <span className="font-cinzel text-[0.65rem] tracking-[0.3em] uppercase text-gold whitespace-nowrap">Trusted by 1000+ Customers</span>
-            </motion.div>
-          </div>
-
-          {/* Lead Capture Form Right */}
+    <section id="bulk-discount" className="relative z-10 py-24 px-8 bg-black border-y border-gold/10">
+      <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-12">
+        <div className="flex-1 text-center md:text-left">
+          <SectionHeader 
+            label="Special Offer" 
+            title="Claim Bulk Discount" 
+            desc="Planning a big event or looking to resell? Get the best wholesale rates instantly by sharing your requirements." 
+          />
+        </div>
+        
+        <div className="flex-1 w-full">
           <motion.div
-            initial={{ opacity: 0, x: 24 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1, delay: 0.8 }}
-            className="bg-black/60 backdrop-blur-md border border-gold/30 rounded-xl p-8 lg:p-10 shadow-[0_8px_32px_rgba(212,175,55,0.15)] relative overflow-hidden group"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="bg-[#0a0804] border border-gold/30 rounded-xl p-8 lg:p-10 shadow-[0_8px_32px_rgba(212,175,55,0.15)] relative overflow-hidden group"
           >
-            {/* Subtle glow effect */}
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold to-transparent"></div>
             <div className="absolute -inset-1 bg-gradient-to-br from-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none rounded-xl blur-xl"></div>
-            
-            <h3 className="font-cinzel text-2xl md:text-3xl font-bold text-white mb-2 relative z-10">
-              Claim <span className="text-gold">Bulk Discount</span>
-            </h3>
-            <p className="text-[#C8B880] text-sm mb-8 relative z-10">Get the best wholesale rates instantly on WhatsApp.</p>
             
             <form onSubmit={handleWhatsAppRedirect} className="space-y-5 relative z-10">
               <div>
@@ -405,15 +413,14 @@ const Hero = () => {
               
               <button 
                 type="submit" 
-                className="w-full font-cinzel text-sm tracking-[0.2em] font-bold uppercase text-black bg-gradient-gold py-4 rounded hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:-translate-y-0.5 transition-all duration-300 mt-4 flex items-center justify-center gap-3"
+                className="w-full font-cinzel text-sm tracking-[0.2em] font-bold uppercase text-black bg-gradient-gold hover-shimmer py-4 rounded hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:-translate-y-0.5 transition-all duration-300 mt-4 flex items-center justify-center gap-3 overflow-hidden"
               >
-                <span>Get Offer on</span>
-                <WhatsAppIcon className="w-5 h-5 text-black" />
-                <span>WhatsApp</span>
+                <span className="relative z-10">Get Offer on</span>
+                <WhatsAppIcon className="w-5 h-5 text-black relative z-10" />
+                <span className="relative z-10">WhatsApp</span>
               </button>
             </form>
           </motion.div>
-
         </div>
       </div>
     </section>
@@ -564,30 +571,30 @@ const Products = () => (
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: i * 0.1 }}
-          className={`group relative rounded-xl overflow-hidden border border-gold/20 shadow-[0_8px_30px_rgba(0,0,0,0.5)] cursor-pointer ${prod.name === 'Festive Gift Boxes' ? 'bg-[#1a1a1a]' : ''}`}
+          className={`group relative rounded-xl overflow-hidden border border-[#D4AF37]/10 hover:border-[#D4AF37]/40 shadow-[0_8px_30px_rgba(0,0,0,0.5)] cursor-pointer ${prod.name === 'Festive Gift Boxes' ? 'bg-[#0a0804]' : 'bg-[#080602]'} transition-all duration-500`}
         >
           {/* Image */}
           <div className="absolute inset-0 flex items-center justify-center p-4 pt-8">
             <img 
               src={prod.img} 
               alt={prod.name} 
-              className={`w-full h-full transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100 ${prod.name === 'Festive Gift Boxes' ? 'object-contain mix-blend-lighten' : 'object-cover absolute inset-0'}`} 
+              className={`w-full h-full transition-transform duration-1000 group-hover:scale-[1.05] opacity-60 group-hover:opacity-90 ${prod.name === 'Festive Gift Boxes' ? 'object-contain mix-blend-screen' : 'object-cover absolute inset-0'}`} 
             />
-            <div className={`absolute inset-0 bg-gradient-to-t ${prod.name === 'Festive Gift Boxes' ? 'from-black via-black/90 to-transparent' : 'from-black via-black/80 to-transparent'}`}></div>
+            <div className={`absolute inset-0 bg-gradient-to-t ${prod.name === 'Festive Gift Boxes' ? 'from-[#050400] via-[#050400]/80 to-transparent' : 'from-[#050400] via-[#050400]/70 to-transparent'}`}></div>
           </div>
           
           {/* Content */}
-          <div className="relative z-10 p-8 h-full flex flex-col justify-end min-h-[320px]">
+          <div className="relative z-10 p-8 h-full flex flex-col justify-end min-h-[340px]">
             <div className="mb-auto">
-              <span className="inline-block font-cinzel text-[0.6rem] tracking-[0.2em] font-bold uppercase py-1 px-3 bg-gold text-black rounded rounded-full shadow-[0_0_15px_rgba(212,175,55,0.4)]">
+              <span className="inline-block font-cinzel text-[0.6rem] tracking-[0.2em] font-bold uppercase py-1 px-4 bg-transparent border border-[#D4AF37] text-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.1)]">
                 {prod.badge}
               </span>
             </div>
             
-            <h3 className="font-cinzel-dec text-xl font-bold text-white tracking-wide mb-2 group-hover:text-gold transition-colors">{prod.name}</h3>
-            <p className="text-[0.95rem] text-gray-300 leading-relaxed mb-4">{prod.desc}</p>
+            <h3 className="font-cinzel-dec text-2xl font-bold text-[#FBF5E5] tracking-wide mb-3 group-hover:text-[#D4AF37] transition-colors">{prod.name}</h3>
+            <p className="text-[0.95rem] text-[#BFA97C] leading-relaxed mb-6">{prod.desc}</p>
             
-            <a href="https://api.whatsapp.com/send/?phone=%2B918249541419" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 font-cinzel text-xs tracking-widest text-gold-light group-hover:text-white transition-colors uppercase font-bold">
+            <a href="https://api.whatsapp.com/send/?phone=%2B918249541419" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 font-cinzel text-xs tracking-widest text-[#D4AF37] group-hover:text-[#FBF5E5] transition-colors uppercase font-bold relative w-fit overflow-hidden hover-shimmer">
               Enquire Now <WhatsAppIcon className="w-4 h-4" />
             </a>
           </div>
@@ -628,9 +635,9 @@ const Gallery = () => {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="font-cinzel-dec text-3xl md:text-5xl text-gradient-gold mb-4">The Golden Gallery</h2>
-            <p className="text-[#C8B880] font-cinzel tracking-widest uppercase text-sm">A visual symphony of light</p>
-            <div className="w-24 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent mx-auto mt-8"></div>
+            <h2 className="font-cinzel-dec text-3xl md:text-5xl text-gradient-gold mb-4 tracking-wide">The Golden Gallery</h2>
+            <p className="text-[#D4AF37] opacity-80 font-cinzel tracking-[0.3em] uppercase text-xs md:text-sm">A visual symphony of light</p>
+            <div className="w-24 h-px bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent mx-auto mt-8"></div>
           </motion.div>
 
           {/* Masonry Layout using CSS columns */}
@@ -642,23 +649,23 @@ const Gallery = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.6, delay: (idx % 3) * 0.1 }}
-                className="relative group overflow-hidden rounded-md break-inside-avoid bg-[#0a0804] border border-transparent hover:border-gold/30 hover:shadow-[0_0_25px_rgba(212,175,55,0.3)] transition-all duration-300 cursor-pointer"
+                className="relative group overflow-hidden rounded-md break-inside-avoid bg-[#0C0A06] border border-[#D4AF37]/10 hover:border-[#D4AF37]/40 hover:shadow-[0_0_30px_rgba(212,175,55,0.2)] transition-all duration-500 cursor-pointer"
                 onClick={() => setSelectedImage(img.src)}
               >
                 <img 
                   src={img.src} 
                   alt={img.title} 
-                  className="w-full h-auto object-cover transform group-hover:scale-[1.03] transition-transform duration-700 ease-out opacity-80 group-hover:opacity-100" 
+                  className="w-full h-auto object-cover transform group-hover:scale-[1.05] transition-transform duration-1000 ease-out opacity-70 group-hover:opacity-100" 
                   loading="lazy" 
                 />
 
                 {/* Darker Overlay when not hovered */}
-                <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-500"></div>
+                <div className="absolute inset-0 bg-[#050400]/50 group-hover:bg-transparent transition-colors duration-700"></div>
 
                 {/* Hover Content Details */}
-                <div className="absolute inset-0 p-6 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-t from-black/80 via-black/20 to-transparent">
-                  <span className="font-cinzel text-xs tracking-[0.2em] uppercase text-gold-light mb-1">{img.category}</span>
-                  <h4 className="font-garamond text-xl text-white">{img.title}</h4>
+                <div className="absolute inset-0 p-6 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-gradient-to-t from-[#050400]/90 via-[#050400]/20 to-transparent">
+                  <span className="font-cinzel text-[0.65rem] tracking-[0.25em] uppercase text-[#FBF5E5] opacity-90 mb-2">{img.category}</span>
+                  <h4 className="font-garamond text-2xl text-[#D4AF37] italic">{img.title}</h4>
                 </div>
               </motion.div>
             ))}
@@ -802,9 +809,9 @@ const CTA = () => (
       href="https://api.whatsapp.com/send/?phone=%2B918249541419" 
       target="_blank" 
       rel="noopener noreferrer" 
-      className="inline-block font-cinzel text-xs tracking-[0.25em] uppercase text-black bg-gradient-gold py-4 px-10 rounded-sm hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(200,150,30,0.5)] transition-all duration-300"
+      className="inline-block relative font-cinzel text-xs tracking-[0.25em] uppercase text-black bg-gradient-gold hover-shimmer py-4 px-10 rounded-sm hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(200,150,30,0.5)] transition-all duration-300 overflow-hidden"
     >
-      Contact Us Now
+      <span className="relative z-10 font-bold">Contact Us Now</span>
     </motion.a>
   </section>
 );
@@ -1170,10 +1177,10 @@ const ScrollSparksBackground = () => {
     };
 
     const createExplosion = (x: number, y: number, intensity: number) => {
-      const count = Math.min(Math.floor(intensity * 1.5), 120);
+      const count = Math.min(Math.floor(intensity * 1.0), 60); // Half the particle explosion size
       for(let i=0; i<count; i++) {
         const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * (intensity * 0.15) + 2;
+        const speed = Math.random() * (intensity * 0.1) + 2;
         particles.push({
           x,
           y,
@@ -1181,8 +1188,8 @@ const ScrollSparksBackground = () => {
           prevY: y,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed - 2, // Slight upward bias
-          life: 1 + Math.random() * 0.8,
-          size: Math.random() * 3 + 1.5,
+          life: 1 + Math.random() * 0.6,
+          size: Math.random() * 3 + 1,
           color: colors[Math.floor(Math.random() * colors.length)]
         });
       }
@@ -1191,9 +1198,8 @@ const ScrollSparksBackground = () => {
     let animationFrameId: number;
 
     const render = () => {
-      // Use semi-transparent fill instead of clearRect for trailing light effect
-      ctx.fillStyle = 'rgba(5, 4, 0, 0.2)';
-      ctx.fillRect(0, 0, width, height);
+      // Use clean hardware-accelerated clear instead of expensive massive rect painting
+      ctx.clearRect(0, 0, width, height);
 
       const currentScrollY = window.scrollY;
       const scrollDiff = currentScrollY - lastScrollY;
@@ -1201,16 +1207,16 @@ const ScrollSparksBackground = () => {
 
       // Spawn on rapid scroll (Firework thrust)
       if (Math.abs(scrollDiff) > 5) {
-         const spawnCount = Math.min(Math.floor(Math.abs(scrollDiff) * 0.8), 60);
+         const spawnCount = Math.min(Math.floor(Math.abs(scrollDiff) * 0.6), 40); // Slightly fewer rapid scroll thrusts
          for(let i=0; i<spawnCount; i++) {
              // If scrolling down, burst comes from bottom. If up, from top.
              const startY = scrollDiff > 0 ? height + 10 : -10;
-             const vyExtra = scrollDiff > 0 ? -Math.abs(scrollDiff) * 0.18 : Math.abs(scrollDiff) * 0.18;
+             const vyExtra = scrollDiff > 0 ? -Math.abs(scrollDiff) * 0.15 : Math.abs(scrollDiff) * 0.15;
              createParticle(Math.random() * width, startY, vyExtra, true);
          }
          
          // Trigger explosive bursts intensely on rapid downward scroll
-         if (scrollDiff > 25 && Math.random() < 0.2) {
+         if (scrollDiff > 25 && Math.random() < 0.15) {
            createExplosion(
              Math.random() * width, 
              Math.random() * (height * 0.6) + height * 0.4, 
@@ -1220,7 +1226,7 @@ const ScrollSparksBackground = () => {
       }
 
       // Ambient floating embers
-      if (Math.random() < 0.3) {
+      if (Math.random() < 0.25) {
         createParticle(Math.random() * width, height + 10, 0);
       }
 
@@ -1228,8 +1234,10 @@ const ScrollSparksBackground = () => {
 
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
-        p.prevX = p.x;
-        p.prevY = p.y;
+        
+        // Retain an actual trail segment instead of just 1 frame line since we removed the wipe
+        const lineLenX = p.vx * 3;
+        const lineLenY = p.vy * 3;
 
         p.x += p.vx;
         p.y += p.vy;
@@ -1239,15 +1247,13 @@ const ScrollSparksBackground = () => {
 
         ctx.globalAlpha = Math.max(0, p.life);
         
-        // Draw trail stroke
+        // Draw extended trail stroke artificially scaling by velocity
         ctx.beginPath();
-        ctx.moveTo(p.prevX, p.prevY);
+        ctx.moveTo(p.x - lineLenX, p.y - lineLenY);
         ctx.lineTo(p.x, p.y);
         ctx.strokeStyle = p.color;
         ctx.lineWidth = p.size;
         ctx.lineCap = 'round';
-        ctx.shadowBlur = 12;
-        ctx.shadowColor = p.color;
         ctx.stroke();
 
         if (p.life <= 0) particles.splice(i, 1);
@@ -1287,13 +1293,13 @@ const ParallaxGlowBackground = () => {
 export default function App() {
   useLayoutEffect(() => {
     const lenis = new Lenis({
-      duration: 2.5,
-      easing: (t) => 1 - Math.pow(1 - t, 5),
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Normal fast ease-out
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 1.5,
-      touchMultiplier: 3,
+      wheelMultiplier: 1, // Reset to standard to prevent jumping
+      touchMultiplier: 2,
     });
 
     function raf(time: number) {
@@ -1321,6 +1327,7 @@ export default function App() {
 
   return (
     <div className="relative min-h-screen bg-[#050400] text-[#EFE4C0] font-garamond overflow-x-hidden selection:bg-gold/30 selection:text-gold-light">
+      <div className="premium-noise"></div>
       <ParallaxGlowBackground />
       <ScrollSparksBackground />
       <FireworkBackground />
@@ -1333,6 +1340,7 @@ export default function App() {
       <Occasions />
       <Testimonials />
       <CTA />
+      <ClaimBulkDiscountSection />
       <Contact />
       <Footer />
       <WhatsAppFAB />
