@@ -1298,8 +1298,8 @@ export default function App() {
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 1, // Reset to standard to prevent jumping
-      touchMultiplier: 2,
+      wheelMultiplier: 1, // Keep natural bounds
+      smoothTouch: false, // Let native mobile handle touch momentum naturally instead of forcing physics
     });
 
     function raf(time: number) {
@@ -1314,8 +1314,12 @@ export default function App() {
       anchor.addEventListener('click', function (e) {
         e.preventDefault();
         const target = this.getAttribute('href');
-        if(target) {
-          lenis.scrollTo(target);
+        if(target && target !== '#') {
+          lenis.scrollTo(target, { 
+            offset: -80, 
+            duration: 1.5, 
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) 
+          });
         }
       });
     });

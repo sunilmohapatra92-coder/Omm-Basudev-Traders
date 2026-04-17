@@ -16,7 +16,8 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  /* Removed scroll-behavior: smooth because Lenis handles this. Having both causes jitter. */
+  scroll-padding-top: 100px;
 }
 
 body {
